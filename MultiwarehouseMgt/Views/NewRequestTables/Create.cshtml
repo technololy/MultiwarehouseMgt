@@ -1,0 +1,121 @@
+﻿@model MultiwarehouseMgt.NewRequestTable
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>New Request Form</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @*@Html.EditorFor(model => model.BookName, new { htmlAttributes = new { @class = "form-control" } })*@
+            @Html.DropDownList("BookName", null, "Please Select", htmlAttributes: new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.LocationName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.LocationName, new SelectList(""), "Please select", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.LocationName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+    @*<div class="form-group">
+            <label class="control-label col-md-2">Location</label>
+            <div class="col-md-10">
+                <select id="LocationName_" name="LocationName_" class="form-control">
+
+                </select>
+                ensure the id of the control caled LocationName matches the name in the model expected when u click submit. also make it match the listening label on the jquery
+            </div>
+        </div>*@
+
+    <div class="form-group">
+        @Html.HiddenFor(model => model.DateAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.HiddenFor(model => model.DateAdded, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DateAdded, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        @Html.HiddenFor(model => model.AddedBy, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.HiddenFor(model => model.AddedBy, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.AddedBy, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+    $(document).ready(function () {
+        $("#BookName").change(function () {
+
+            var id = $("#BookName option:selected").val();
+            //alert(id);
+            $.ajax({
+
+        type: 'GET',
+
+        url: '@Url.Action("GetBookLocation", "NewRequestTables")',
+        dataType: 'json',
+        data: { name: id },
+        success: function (data) {
+            $("#LocationName").empty();
+            $("#LocationName").removeAttr("disabled");
+            $.each(data, function (i, data) {
+                console.log(data);
+                var Location = data.location;
+                $("#LocationName").append('<option>' +
+                    data + '</option>');
+            });
+        },
+        error: function (ex) {
+            alert('Failed to retrieve locations : ' + ex);
+        }
+            });
+        });
+
+    });
+    </script>
+}

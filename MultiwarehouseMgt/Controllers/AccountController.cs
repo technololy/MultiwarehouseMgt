@@ -449,7 +449,7 @@ namespace MultiwarehouseMgt.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "NewRequestTables");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

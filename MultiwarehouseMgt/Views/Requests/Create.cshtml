@@ -1,0 +1,105 @@
+﻿@model MultiwarehouseMgt.Request
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Request</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookRequestedId, "Book  Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @Html.DropDownList("Id", null, "Please Select", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.BookRequestedId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Location</label>
+            <div class="col-md-10">
+                <select id="BookLocation" class="form-control">
+                    <option></option>
+                </select>
+                @Html.ValidationMessageFor(model => model.BookRequestedId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.HiddenFor(model => model.DateRequested, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.HiddenFor(model => model.DateRequested, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateRequested, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.HiddenFor(model => model.RequestedBy, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.HiddenFor(model => model.RequestedBy, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RequestedBy, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    <script>
+
+    $(document).ready(function () {
+        $("#Id").change(function () {
+
+            var id = $("#Id option:selected").val();
+            alert(id);
+            $.ajax({
+
+        type: 'GET',
+
+        url: '@Url.Action("GetBookLocation", "Requests")',
+        dataType: 'json',
+        data: { name: id },
+        success: function (data) {
+            $("#BookLocation").empty();
+            $("#BookLocation").removeAttr("disabled");
+            $.each(data, function (i, data) {
+                console.log(data);
+                var Location = data.location;
+                $("#BookLocation").append('<option value="'
+                    + data + '">' +
+                    data + '</option>');
+            });
+        },
+        error: function (ex) {
+            alert('Failed to retrieve locations : ' + ex);
+        }
+            });
+        });
+
+    });
+    </script>
+}
